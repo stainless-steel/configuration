@@ -12,8 +12,16 @@ pub struct Tree {
 
 impl Tree {
     /// Look up a value.
-    pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
-        let mut prefix = &*self.path;
+    pub fn get<'l, T: Any>(&'l self, mut path: &str) -> Option<&'l T> {
+        let mut prefix = self.path.clone();
+        if let Some(i) = path.rfind('.') {
+            if !prefix.is_empty() {
+                prefix.push('.');
+            }
+            prefix.push_str(&path[..i]);
+            path = &path[(i + 1)..];
+        }
+        let mut prefix = &*prefix;
         loop {
             if prefix.is_empty() {
                 return self.node.get(path);
@@ -80,6 +88,20 @@ impl From<Node> for Tree {
 #[cfg(test)]
 mod tests {
     use format::toml;
+
+    #[test]
+    fn get() {
+        let tree = toml::parse(r#"
+            qux = 69
+
+            [foo]
+            bar = 42
+        "#).unwrap();
+
+        assert_eq!(tree.get::<i64>("qux").unwrap(), &69);
+        assert_eq!(tree.get::<i64>("foo.bar").unwrap(), &42);
+        assert_eq!(tree.get::<i64>("foo.qux").unwrap(), &69);
+    }
 
     #[test]
     fn branch() {
