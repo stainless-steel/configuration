@@ -12,7 +12,7 @@ description = "The package provides a malleable tree structure."
 default = ["toml"]
 
 [dependencies]
-options = "0.3"
+options = "0.4"
 
 [dependencies.toml]
 version = "0.1"

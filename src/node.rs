@@ -1,21 +1,20 @@
 use options::Options;
 use std::any::Any;
-use std::ops::{Deref, DerefMut};
 
 /// A node.
 pub struct Node(Options);
 
 impl Node {
-    /// Look up a value.
+    /// Read a value.
     pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
         let (head, tail) = match path.find('.') {
             Some(i) => (&path[..i], &path[(i + 1)..]),
-            _ => return self.get_ref(path),
+            _ => return self.0.get_ref(path),
         };
-        if let Some(node) = self.get_ref::<Node>(head) {
+        if let Some(node) = self.0.get_ref::<Node>(head) {
             return node.get(tail);
         }
-        if let Some(array) = self.get_ref::<Vec<Node>>(head) {
+        if let Some(array) = self.0.get_ref::<Vec<Node>>(head) {
             let (head, tail) = match tail.find('.') {
                 Some(i) => (&tail[..i], &tail[(i + 1)..]),
                 _ => (tail, ""),
@@ -30,27 +29,29 @@ impl Node {
         }
         None
     }
+
+    /// Write a value.
+    pub fn set<T: Any>(&mut self, path: &str, value: T) -> Option<()> {
+        let (head, tail) = match path.find('.') {
+            Some(i) => (&path[..i], &path[(i + 1)..]),
+            _ => {
+                self.0.set(path, value);
+                return Some(());
+            },
+        };
+        if let Some(node) = self.0.get_mut::<Node>(head) {
+            return node.set(tail, value);
+        }
+        let mut node = Node(Options::new());
+        let result = node.set(tail, value);
+        self.0.set(head, node);
+        result
+    }
 }
 
 impl From<Options> for Node {
     #[inline]
     fn from(options: Options) -> Node {
         Node(options)
-    }
-}
-
-impl Deref for Node {
-    type Target = Options;
-
-    #[inline]
-    fn deref(&self) -> &Options {
-        &self.0
-    }
-}
-
-impl DerefMut for Node {
-    #[inline]
-    fn deref_mut(&mut self) -> &mut Options {
-        &mut self.0
     }
 }
