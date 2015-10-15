@@ -7,3 +7,13 @@ repository = "https://github.com/stainless-steel/configuration"
 homepage = "https://github.com/stainless-steel/configuration"
 documentation = "https://stainless-steel.github.io/configuration"
 description = "The package provides a malleable tree structure."
+
+[features]
+default = ["toml"]
+
+[dependencies]
+options = "*"
+
+[dependencies.toml]
+version = "*"
+optional = true
