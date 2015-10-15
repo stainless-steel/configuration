@@ -14,12 +14,12 @@ impl Node {
         let mut i = 0;
         while i < count {
             if i + 1 == count {
-                return current.0.get_ref(chunks[i]);
+                return current.get_ref(chunks[i]);
             }
-            if let Some(node) = current.0.get_ref::<Node>(chunks[i]) {
+            if let Some(node) = current.get_ref::<Node>(chunks[i]) {
                 i += 1;
                 current = node;
-            } else if let Some(array) = current.0.get_ref::<Vec<Node>>(chunks[i]) {
+            } else if let Some(array) = current.get_ref::<Vec<Node>>(chunks[i]) {
                 i += 1;
                 match chunks[i].parse::<usize>() {
                     Ok(j) => if i + 1 == count {
