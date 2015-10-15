@@ -12,25 +12,21 @@ pub struct Tree {
 
 impl Tree {
     /// Look up a value.
-    pub fn get<'l, T: Any>(&'l self, mut path: &str) -> Option<&'l T> {
-        let mut prefix = self.path.clone();
-        if let Some(i) = path.rfind('.') {
-            if !prefix.is_empty() {
-                prefix.push('.');
-            }
-            prefix.push_str(&path[..i]);
-            path = &path[(i + 1)..];
-        }
-        let mut prefix = &*prefix;
+    pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
+        let (head, tail) = match path.rfind('.') {
+            Some(i) => (self.chain(&path[..i]), &path[(i + 1)..]),
+            _ => (self.path.clone(), path),
+        };
+        let mut head = &*head;
         loop {
-            if prefix.is_empty() {
-                return self.node.get(path);
+            if head.is_empty() {
+                return self.node.get(tail);
             }
-            if let Some(value) = self.node.get(&format!("{}.{}", prefix, path)) {
+            if let Some(value) = self.node.get(&format!("{}.{}", head, tail)) {
                 return Some(value);
             }
-            prefix = match prefix.rfind('.') {
-                Some(i) => &prefix[..i],
+            head = match head.rfind('.') {
+                Some(i) => &head[..i],
                 _ => "",
             };
         }
@@ -38,32 +34,39 @@ impl Tree {
 
     /// Return a subtree.
     pub fn branch(&self, path: &str) -> Option<Tree> {
-        self.get::<Node>(path).map(|_| {
-            Tree {
-                node: self.node.clone(),
-                path: if self.path.is_empty() {
-                    path.to_string()
-                } else {
-                    format!("{}.{}", &self.path, path)
-                },
-            }
+        let path = self.chain(path);
+        if self.node.get::<Node>(&path).is_none() {
+            return None;
+        }
+        Some(Tree {
+            node: self.node.clone(),
+            path: path,
         })
     }
 
     /// Return an array of subtrees.
     pub fn forest(&self, path: &str) -> Option<Vec<Tree>> {
-        self.get::<Vec<Node>>(path).map(|array| {
-            array.iter().enumerate().map(|(i, _)| {
-                Tree {
-                    node: self.node.clone(),
-                    path: if self.path.is_empty() {
-                        format!("{}.{}", path, i)
-                    } else {
-                        format!("{}.{}.{}", &self.path, path, i)
-                    },
-                }
-            }).collect()
-        })
+        let path = self.chain(path);
+        let array = match self.node.get::<Vec<Node>>(&path) {
+            Some(array) => array,
+            _ => return None,
+        };
+        Some(array.iter().enumerate().map(|(i, _)| {
+            Tree {
+                node: self.node.clone(),
+                path: format!("{}.{}", path, i),
+            }
+        }).collect())
+    }
+
+    fn chain(&self, path: &str) -> String {
+        if self.path.is_empty() {
+            return path.to_string();
+        }
+        let mut prefix = self.path.clone();
+        prefix.push('.');
+        prefix.push_str(path);
+        prefix
     }
 }
 
