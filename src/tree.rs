@@ -4,19 +4,21 @@ use std::rc::Rc;
 
 use Node;
 
+/// A tree.
 pub struct Tree {
     node: Rc<Node>,
     path: String,
 }
 
 impl Tree {
+    /// Look up a value.
     pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
         let mut prefix = &*self.path;
         loop {
             if prefix.is_empty() {
-                return self.node.lookup(path);
+                return self.node.get(path);
             }
-            if let Some(value) = self.node.lookup(&format!("{}.{}", prefix, path)) {
+            if let Some(value) = self.node.get(&format!("{}.{}", prefix, path)) {
                 return Some(value);
             }
             prefix = match prefix.rfind('.') {
@@ -26,6 +28,7 @@ impl Tree {
         }
     }
 
+    /// Return a subtree.
     pub fn branch(&self, path: &str) -> Option<Tree> {
         self.get::<Node>(path).map(|_| {
             Tree {
@@ -39,7 +42,8 @@ impl Tree {
         })
     }
 
-    pub fn collection(&self, path: &str) -> Option<Vec<Tree>> {
+    /// Return an array of subtrees.
+    pub fn forest(&self, path: &str) -> Option<Vec<Tree>> {
         self.get::<Vec<Node>>(path).map(|array| {
             array.iter().enumerate().map(|(i, _)| {
                 Tree {
@@ -105,7 +109,7 @@ mod tests {
     }
 
     #[test]
-    fn collection() {
+    fn forest() {
         let tree = toml::parse(r#"
             [[foo.bar]]
             baz = 42
@@ -114,7 +118,7 @@ mod tests {
             baz = 69
         "#).unwrap();
 
-        let baz = tree.collection("foo.bar").unwrap().iter().map(|tree| {
+        let baz = tree.forest("foo.bar").unwrap().iter().map(|tree| {
             *tree.get::<i64>("baz").unwrap()
         }).collect::<Vec<_>>();
 

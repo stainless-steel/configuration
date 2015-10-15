@@ -1,9 +1,12 @@
+//! The TOML format.
+
 use options::Options;
 use std::path::Path;
 use toml::{Parser, Table, Value};
 
 use {Node, Result, Tree};
 
+/// Open a file.
 pub fn open<T: AsRef<Path>>(path: T) -> Result<Tree> {
     use std::fs::File;
     use std::io::Read;
@@ -13,6 +16,7 @@ pub fn open<T: AsRef<Path>>(path: T) -> Result<Tree> {
     parse(&content)
 }
 
+/// Parse a text.
 pub fn parse(content: &str) -> Result<Tree> {
     let mut parser = Parser::new(content);
     match parser.parse() {

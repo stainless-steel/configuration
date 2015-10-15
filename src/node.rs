@@ -2,10 +2,12 @@ use options::Options;
 use std::any::Any;
 use std::ops::{Deref, DerefMut};
 
+/// A node.
 pub struct Node(Options);
 
 impl Node {
-    pub fn lookup<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
+    /// Look up a value.
+    pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
         let chunks = path.split('.').collect::<Vec<_>>();
         let count = chunks.len();
         let mut current = self;
