@@ -39,7 +39,7 @@ fn convert(mut table: Table) -> Result<Node> {
                     if let Value::Table(inner) = inner {
                         array.push(try!(convert(inner)));
                     } else {
-                        raise!("extected a table");
+                        raise!("expected a table");
                     }
                 }
                 value.set(array);
