@@ -4,6 +4,25 @@ The package provides a malleable tree structure.
 
 ## [Documentation][doc]
 
+## Example
+
+```rust
+let tree = configuration::format::toml::parse(r#"
+    message = "one"
+
+    [foo.bar]
+    message = "two"
+
+    [foo.baz]
+    answer = 42
+"#).unwrap();
+
+assert_eq!(tree.get::<String>("message").unwrap(), "one");
+assert_eq!(tree.get::<String>("foo.bar.message").unwrap(), "two");
+assert_eq!(tree.get::<String>("foo.baz.message").unwrap(), "one");
+assert_eq!(tree.get::<i64>("foo.baz.answer").unwrap(), &42);
+```
+
 ## Contributing
 
 1. Fork the project.
