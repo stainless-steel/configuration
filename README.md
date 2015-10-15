@@ -20,7 +20,10 @@ let tree = configuration::format::toml::parse(r#"
 assert_eq!(tree.get::<String>("message").unwrap(), "one");
 assert_eq!(tree.get::<String>("foo.bar.message").unwrap(), "two");
 assert_eq!(tree.get::<String>("foo.baz.message").unwrap(), "one");
-assert_eq!(tree.get::<i64>("foo.baz.answer").unwrap(), &42);
+
+let tree = tree.branch("foo.baz").unwrap();
+
+assert_eq!(tree.get::<i64>("answer").unwrap(), &42);
 ```
 
 ## Contributing
