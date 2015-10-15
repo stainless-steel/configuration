@@ -59,14 +59,14 @@ impl Tree {
         }).collect())
     }
 
-    fn chain(&self, path: &str) -> String {
+    fn chain(&self, chunk: &str) -> String {
         if self.path.is_empty() {
-            return path.to_string();
+            return chunk.to_string();
         }
-        let mut prefix = self.path.clone();
-        prefix.push('.');
-        prefix.push_str(path);
-        prefix
+        let mut path = self.path.clone();
+        path.push('.');
+        path.push_str(chunk);
+        path
     }
 }
 
