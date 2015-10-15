@@ -8,33 +8,27 @@ pub struct Node(Options);
 impl Node {
     /// Look up a value.
     pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
-        let chunks = path.split('.').collect::<Vec<_>>();
-        let count = chunks.len();
-        let mut current = self;
-        let mut i = 0;
-        while i < count {
-            if i + 1 == count {
-                return current.get_ref(chunks[i]);
-            }
-            if let Some(node) = current.get_ref::<Node>(chunks[i]) {
-                i += 1;
-                current = node;
-            } else if let Some(array) = current.get_ref::<Vec<Node>>(chunks[i]) {
-                i += 1;
-                match chunks[i].parse::<usize>() {
-                    Ok(j) => if i + 1 == count {
-                        return Any::downcast_ref(&array[j]);
-                    } else {
-                        i += 1;
-                        current = &array[j];
-                    },
-                    _ => return None,
+        let (head, tail) = match path.find('.') {
+            Some(i) => (&path[..i], &path[(i + 1)..]),
+            _ => return self.get_ref(path),
+        };
+        if let Some(node) = self.get_ref::<Node>(head) {
+            return node.get(tail);
+        }
+        if let Some(array) = self.get_ref::<Vec<Node>>(head) {
+            let (head, tail) = match tail.find('.') {
+                Some(i) => (&tail[..i], &tail[(i + 1)..]),
+                _ => (tail, ""),
+            };
+            if let Ok(i) = head.parse::<usize>() {
+                if tail.is_empty() {
+                    return Any::downcast_ref(&array[i]);
+                } else {
+                    return array[i].get(tail);
                 }
-            } else {
-                return None;
             }
         }
-        unreachable!();
+        None
     }
 }
 
