@@ -10,6 +10,7 @@ description = "The package provides a malleable tree structure."
 
 [features]
 default = ["toml"]
+unstable = []
 
 [dependencies]
 options = "0.4"

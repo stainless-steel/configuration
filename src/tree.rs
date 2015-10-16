@@ -60,6 +60,7 @@ impl Tree {
     }
 
     /// Write a value.
+    #[cfg(feature = "unstable")]
     pub fn set<T: Any>(&mut self, path: &str, value: T) -> Option<()> {
         let path = self.chain(path);
         match Rc::get_mut(&mut self.node) {
@@ -159,6 +160,7 @@ mod tests {
         assert_eq!(tree.get::<i64>("foo.qux").unwrap(), &69);
     }
 
+    #[cfg(feature = "unstable")]
     #[test]
     fn set() {
         let mut tree = toml::parse(r#"

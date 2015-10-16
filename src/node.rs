@@ -31,6 +31,7 @@ impl Node {
     }
 
     /// Write a value.
+    #[cfg(feature = "unstable")]
     pub fn set<T: Any>(&mut self, path: &str, value: T) -> Option<()> {
         let (head, tail) = match path.find('.') {
             Some(i) => (&path[..i], &path[(i + 1)..]),
