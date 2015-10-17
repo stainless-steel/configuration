@@ -11,6 +11,12 @@ pub struct Tree {
 }
 
 impl Tree {
+    /// Create a tree.
+    #[inline]
+    pub fn new() -> Tree {
+        Tree { node: Rc::new(Node::new()), path: String::new() }
+    }
+
     /// Return a subtree.
     pub fn branch(&self, path: &str) -> Option<Tree> {
         let path = self.chain(path);

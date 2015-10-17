@@ -5,6 +5,12 @@ use std::any::Any;
 pub struct Node(Options);
 
 impl Node {
+    /// Create a node.
+    #[inline]
+    pub fn new() -> Node {
+        Node(Options::new())
+    }
+
     /// Read a value.
     pub fn get<'l, T: Any>(&'l self, path: &str) -> Option<&'l T> {
         let (head, tail) = match path.find('.') {
