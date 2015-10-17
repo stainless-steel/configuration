@@ -1,7 +1,7 @@
 //! Malleable tree structure.
 //!
 //! ```
-//! let tree = configuration::format::toml::parse(r#"
+//! let tree = configuration::format::TOML::parse(r#"
 //!     message = "one"
 //!
 //!     [foo.bar]

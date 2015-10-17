@@ -100,11 +100,11 @@ impl From<Node> for Tree {
 
 #[cfg(test)]
 mod tests {
-    use format::toml;
+    use format::TOML;
 
     #[test]
     fn branch() {
-        let tree = toml::parse(r#"
+        let tree = TOML::parse(r#"
             qux = 69
 
             [foo]
@@ -131,7 +131,7 @@ mod tests {
 
     #[test]
     fn forest() {
-        let tree = toml::parse(r#"
+        let tree = TOML::parse(r#"
             [[foo.bar]]
             baz = 42
 
@@ -148,7 +148,7 @@ mod tests {
 
     #[test]
     fn get() {
-        let tree = toml::parse(r#"
+        let tree = TOML::parse(r#"
             qux = 69
 
             [foo]
@@ -163,7 +163,7 @@ mod tests {
     #[cfg(feature = "unstable")]
     #[test]
     fn set() {
-        let mut tree = toml::parse(r#"
+        let mut tree = TOML::parse(r#"
             qux = 69
 
             [foo]

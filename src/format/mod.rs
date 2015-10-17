@@ -1,4 +1,7 @@
 //! File formats.
 
 #[cfg(feature = "toml")]
-pub mod toml;
+mod toml;
+
+#[cfg(feature = "toml")]
+pub use self::toml::TOML;

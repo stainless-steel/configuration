@@ -1,27 +1,30 @@
-//! The TOML format.
-
 use options::Options;
 use std::path::Path;
 use toml::{Parser, Table, Value};
 
 use {Node, Result, Tree};
 
-/// Open a file.
-pub fn open<T: AsRef<Path>>(path: T) -> Result<Tree> {
-    use std::fs::File;
-    use std::io::Read;
+/// The TOML format.
+pub struct TOML;
 
-    let mut content = String::new();
-    ok!(ok!(File::open(path)).read_to_string(&mut content));
-    parse(&content)
-}
+impl TOML {
+    /// Open a file.
+    pub fn open<T: AsRef<Path>>(path: T) -> Result<Tree> {
+        use std::fs::File;
+        use std::io::Read;
 
-/// Parse a text.
-pub fn parse(content: &str) -> Result<Tree> {
-    let mut parser = Parser::new(content);
-    match parser.parse() {
-        Some(table) => Ok(Tree::from(try!(convert(table)))),
-        _ => raise!("failed to parse ({})", collect_errors(&parser)),
+        let mut content = String::new();
+        ok!(ok!(File::open(path)).read_to_string(&mut content));
+        TOML::parse(&content)
+    }
+
+    /// Parse a text.
+    pub fn parse(content: &str) -> Result<Tree> {
+        let mut parser = Parser::new(content);
+        match parser.parse() {
+            Some(table) => Ok(Tree::from(try!(convert(table)))),
+            _ => raise!("failed to parse ({})", collect_errors(&parser)),
+        }
     }
 }
 
