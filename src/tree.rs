@@ -5,6 +5,7 @@ use std::rc::Rc;
 use Node;
 
 /// A tree.
+#[derive(Debug)]
 pub struct Tree {
     node: Rc<Node>,
     path: String,
@@ -86,21 +87,21 @@ impl Tree {
     }
 }
 
+impl Clone for Tree {
+    fn clone(&self) -> Self {
+        Tree { node: self.node.clone(), path: self.path.clone(), }
+    }
+}
+
 impl From<Options> for Tree {
     fn from(options: Options) -> Tree {
-        Tree {
-            node: Rc::new(Node::from(options)),
-            path: String::new(),
-        }
+        Tree { node: Rc::new(Node::from(options)), path: String::new() }
     }
 }
 
 impl From<Node> for Tree {
     fn from(node: Node) -> Tree {
-        Tree {
-            node: Rc::new(node),
-            path: String::new(),
-        }
+        Tree { node: Rc::new(node), path: String::new() }
     }
 }
 

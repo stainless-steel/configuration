@@ -2,6 +2,7 @@ use options::Options;
 use std::any::Any;
 
 /// A node.
+#[derive(Debug)]
 pub struct Node(Options);
 
 impl Node {
