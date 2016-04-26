@@ -1,27 +1,19 @@
 language: rust
 sudo: false
+
 rust:
   - stable
   - beta
   - nightly
 
-script:
-  - if [ "$TRAVIS_RUST_VERSION" = "stable" ]; then
-      cargo test;
-      cargo build;
-    else
-      cargo test --features unstable;
-      cargo build --features unstable;
-    fi
-
 after_success:
-  - curl https://stainless-steel.github.io/travis/after_success.sh | bash
+  - if [ "$TRAVIS_RUST_VERSION" == "nightly" ]; then
+      curl https://stainless-steel.github.io/travis/update_documentation.sh | bash;
+    fi
 
 env:
   global:
-    - RUSTDOC_VERSION=nightly
-    - CARGO_FLAGS="--features=unstable"
-    - secure: pKnq1ZVmurUwgwUsh+xyBiWrjLzu/hnO91oUIX+a/6aAUMJt2iQyFpcccveg3YktgSPlkBh5BVLDXvvUUlUI8y2g14EPjZwqLdE4a9hKhyQTtLHyYFGqLstBSISLuAg/Zs+bvvkqqzNWGysmTasHbOLZTjRsReeo/RYagxtsMFP3X/mVYkLLSe6W3OYxso91xh0ePxqWnJZ6aJ6xBdFz4khe71FORKs75zFTbnsYYhldwWK2uAlCl0VN0TUlm6THa4dCfNQF//Jg6d9CDWmn4GNl5DzKibBRg3+X2zMk0bSYqG2xex7OyD/PfQVVJaVHyrvHJFMpT+QyI5t1B40i4J9OSVDs2iMzUc+thNB/m7E7+taKJhs3ZIVD4DRpqOkhy0P9azMqMQ/eUX0H855e2d0/8+FssvMgJLAElQFlm6QDkuw9PGRAiPfdeNDAS5VBL8hFZSsQrsQ+lAmax4t5LR/BmI5CMHL7PJXBaPduHjhTnTB7jZJHgRCR6Gu2qx2XytGYDB/2yU1Q/ys03tf2SFz+30kRnJMrj9jy6eE6UrVphLvcH1TJmMm21eXPq5LDwPQXr/vTGy3ETL6+BRU+fbOzI7f+vZTdlnPkO8zhY3ap5VdebBflR/qkZbMY6159LI6E5fn//W1mkw1wBt7T8PIcSBRrO+lY98VIRCPpYrA=
+    - secure: ZR4fnBBAXpiKEmdZybB+QQZofBn1DEPwgZkxTypAS8t20yyToYDDfL4rGyCyb5wwrTBAhREHv3zo7UYife5EK3At+49YsHpcQng2hEvaLBHbZaBypJ85HiGYEvfYtb6BFVWcZ9rQE3akbciwiS+jLhfDg+ODZUBr4Ne3gM0i5pBwnHntTvxFc2UFiqYHB001g+GZW84TDC8oWxObJxGlMCW2qCRuxKE//5IR3ykkYwQMiqEfBm3mR04Fp7ua5eXYvSp+mwANGUDRCDL7NC1YAOyPMjdi5VYHCk/r7v6oRuWfpWzpKR8Qhx9Jnbm0nMXcc3fuB00RI7d02gKdPKqn2zkEgdoMuB5eQoVX+rPOTXCKR3qtpfZmZ/Zy6WbZM9MW7lhh4vwv9w7ajcaTK+GqRJ7RmUnlElV82Wi1Zx1s5zJhF+5D18FbhXx/OSmnQZBsxOH9UUCfFd4VNxwqZLPAqybPmVmDLuYYxWYnHcf1t+J7Tqpg3cgmG5RsWdqoQhumIz7hW89GBg3mwfSbRzecXye/6Gm4OBQ/IyCVT8p1TGS0pCwbjU/YAAUrsXboXtXsTXthNZW3Cnunp2WasR9SrRT7IBBrhE5Y/+ouk2NoDuMdpBzb/X6viC9VW2b836Zj3z+MSEmEne36oTyQg1wH52BESXnJ2WC1lh098WeO16A=
 
 notifications:
   email: false
