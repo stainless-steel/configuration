@@ -6,14 +6,5 @@ rust:
   - beta
   - nightly
 
-after_success:
-  - if [ "$TRAVIS_RUST_VERSION" == "nightly" ]; then
-      curl https://stainless-steel.github.io/travis/update_documentation.sh | bash;
-    fi
-
-env:
-  global:
-    - secure: ZR4fnBBAXpiKEmdZybB+QQZofBn1DEPwgZkxTypAS8t20yyToYDDfL4rGyCyb5wwrTBAhREHv3zo7UYife5EK3At+49YsHpcQng2hEvaLBHbZaBypJ85HiGYEvfYtb6BFVWcZ9rQE3akbciwiS+jLhfDg+ODZUBr4Ne3gM0i5pBwnHntTvxFc2UFiqYHB001g+GZW84TDC8oWxObJxGlMCW2qCRuxKE//5IR3ykkYwQMiqEfBm3mR04Fp7ua5eXYvSp+mwANGUDRCDL7NC1YAOyPMjdi5VYHCk/r7v6oRuWfpWzpKR8Qhx9Jnbm0nMXcc3fuB00RI7d02gKdPKqn2zkEgdoMuB5eQoVX+rPOTXCKR3qtpfZmZ/Zy6WbZM9MW7lhh4vwv9w7ajcaTK+GqRJ7RmUnlElV82Wi1Zx1s5zJhF+5D18FbhXx/OSmnQZBsxOH9UUCfFd4VNxwqZLPAqybPmVmDLuYYxWYnHcf1t+J7Tqpg3cgmG5RsWdqoQhumIz7hW89GBg3mwfSbRzecXye/6Gm4OBQ/IyCVT8p1TGS0pCwbjU/YAAUrsXboXtXsTXthNZW3Cnunp2WasR9SrRT7IBBrhE5Y/+ouk2NoDuMdpBzb/X6viC9VW2b836Zj3z+MSEmEne36oTyQg1wH52BESXnJ2WC1lh098WeO16A=
-
 notifications:
   email: false

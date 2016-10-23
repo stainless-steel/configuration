@@ -2,7 +2,7 @@
 
 The package provides a malleable tree structure.
 
-## [Documentation][doc]
+## [Documentation][documentation]
 
 ## Example
 
@@ -33,8 +33,8 @@ Your contribution is highly appreciated. Do not hesitate to open an issue or a
 pull request. Note that any contribution submitted for inclusion in the project
 will be licensed according to the terms given in [LICENSE.md](LICENSE.md).
 
-[version-img]: https://img.shields.io/crates/v/configuration.svg
-[version-url]: https://crates.io/crates/configuration
+[documentation]: https://docs.rs/configuration
 [status-img]: https://travis-ci.org/stainless-steel/configuration.svg?branch=master
 [status-url]: https://travis-ci.org/stainless-steel/configuration
-[doc]: https://stainless-steel.github.io/configuration
+[version-img]: https://img.shields.io/crates/v/configuration.svg
+[version-url]: https://crates.io/crates/configuration
