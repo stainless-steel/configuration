@@ -1,9 +1,18 @@
 [package]
 name = "configuration"
 version = "0.8.0"
+edition = "2021"
 license = "Apache-2.0/MIT"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
 description = "The package provides a means of configuration."
 documentation = "https://docs.rs/configuration"
 homepage = "https://github.com/stainless-steel/configuration"
 repository = "https://github.com/stainless-steel/configuration"
+
+[features]
+serde = ["dep:serde"]
+serde_json = ["serde", "dep:serde_json"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"], optional = true }
+serde_json = { version = "1", optional = true }
