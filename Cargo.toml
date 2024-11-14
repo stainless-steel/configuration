@@ -1,20 +1,9 @@
 [package]
 name = "configuration"
-version = "0.7.2"
+version = "0.8.0"
 license = "Apache-2.0/MIT"
 authors = ["Ivan Ukhov <ivan.ukhov@gmail.com>"]
-description = "The package provides a malleable tree structure."
+description = "The package provides a means of configuration."
 documentation = "https://docs.rs/configuration"
 homepage = "https://github.com/stainless-steel/configuration"
 repository = "https://github.com/stainless-steel/configuration"
-
-[features]
-default = ["toml"]
-
-[dependencies]
-options = "0.5"
-
-[dependencies.toml]
-version = "0.1"
-optional = true
-default-features = false
