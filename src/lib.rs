@@ -51,16 +51,22 @@
 ///     }
 /// }
 ///
+/// std::env::set_var("CONFIG_FOO_BAR", "bar");
 /// std::env::set_var("CONFIG_BAR_BUZ", "buz");
+/// std::env::set_var("CONFIG_BUZ_QUX", "127.0.0.1:80");
 /// std::env::set_var("CONFIG_QUX", "qux");
 ///
-/// let config = Config::default().unwrap();
-///
+/// let config = Config::default();
 /// assert_eq!(config.foo.bar, "");
+/// assert_eq!(config.buz.qux, "0.0.0.0:80".parse().unwrap());
+/// assert_eq!(config.qux, "");
+///
+/// let config = Config::try_default().unwrap();
+/// assert_eq!(config.foo.bar, "bar");
 /// assert_eq!(config.foo.buz, Path::new("buz"));
 /// assert_eq!(config.foo.qux, 42);
 /// assert_eq!(config.bar.buz, "buz");
-/// assert_eq!(config.buz.qux, "0.0.0.0:80".parse().unwrap());
+/// assert_eq!(config.buz.qux, "127.0.0.1:80".parse().unwrap());
 /// assert_eq!(config.qux, "qux");
 /// ```
 #[macro_export]
@@ -100,16 +106,28 @@ macro_rules! define {
 
         impl $struct {
             /// Create an instance from the environment.
-            #[allow(clippy::should_implement_trait)]
-            pub fn default() -> std::io::Result<Self> {
+            pub fn try_default() -> std::io::Result<Self> {
                 Ok(Self {
+                    $(
+                        $field: $crate::define!(
+                            @try_default
+                            $type [$($inner)?] $($default_variable $($default_function())?)?
+                        ),
+                    )+
+                })
+            }
+        }
+
+        impl Default for $struct {
+            fn default() -> Self {
+                Self {
                     $(
                         $field: $crate::define!(
                             @default
                             $type [$($inner)?] $($default_variable $($default_function())?)?
                         ),
                     )+
-                })
+                }
             }
         }
 
@@ -137,21 +155,36 @@ macro_rules! define {
         <$type>::default()
     );
     (@default $type:ty [$inner:ident]) => (
-        <$type>::default()?
+        <$type>::default()
     );
     (@default $type:ty [$($inner:ident)?] $variable:ident) => (
+        <$type>::default()
+    );
+    (@default $type:ty [$($inner:ident)?] $variable:ident $function:ident ()) => (
+        $function()
+    );
+    (@default $type:ty [$($inner:ident)?] $function:ident ()) => (
+        $function()
+    );
+    (@try_default $type:ty []) => (
+        <$type>::default()
+    );
+    (@try_default $type:ty [$inner:ident]) => (
+        <$type>::try_default()?
+    );
+    (@try_default $type:ty [$($inner:ident)?] $variable:ident) => (
         match std::env::var(stringify!($variable)) {
             Ok(value) => std::str::FromStr::from_str(&value).map_err(|error| std::io::Error::other(error))?,
             _ => <$type>::default(),
         }
     );
-    (@default $type:ty [$($inner:ident)?] $variable:ident $function:ident ()) => (
+    (@try_default $type:ty [$($inner:ident)?] $variable:ident $function:ident ()) => (
         match std::env::var(stringify!($variable)) {
             Ok(value) => std::str::FromStr::from_str(&value).map_err(|error| std::io::Error::other(error))?,
             _ => $function(),
         }
     );
-    (@default $type:ty [$($inner:ident)?] $function:ident ()) => (
+    (@try_default $type:ty [$($inner:ident)?] $function:ident ()) => (
         $function()
     );
 }
